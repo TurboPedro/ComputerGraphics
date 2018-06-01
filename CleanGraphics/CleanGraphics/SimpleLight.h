@@ -6,7 +6,7 @@ class SimpleLight :
 {
 
 public:
-	SimpleLight(SColor lightColor, glm::vec4 lightPosition);
+	SimpleLight(SColor lightColor, SAttenuation att, glm::vec4 lightPosition);
 	~SimpleLight();
 };
 

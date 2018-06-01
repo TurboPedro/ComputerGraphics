@@ -3,6 +3,7 @@
 #include <imgui\imgui.h>
 #include <imgui\imgui_impl_glfw_gl3.h>
 
+#include "global.h"
 #include "MyGlWindow.h"
 
 MyGlWindow *win;
@@ -101,7 +102,8 @@ int main(int ac, char **av)
 	/* Initialize the library */
 	if (!glfwInit())
 	{
-
+		std::cerr << "OpenGL Initialisation failed" << std::endl;
+		return (84);
 	}
 
 
@@ -122,6 +124,8 @@ int main(int ac, char **av)
 		glfwTerminate();
 		return -1;
 	}
+
+	ImGui_ImplGlfwGL3_Init(window, true);
 
 	glfwMakeContextCurrent(window);
 
@@ -169,6 +173,12 @@ int main(int ac, char **av)
 	while (!glfwWindowShouldClose(window))
 	{
 
+		ImGui_ImplGlfwGL3_NewFrame();
+		ImGui::SliderFloat("Linear attenuation", &global::Linear, 0.0f, 0.1f);
+		ImGui::SliderFloat("Quadratic attenuation", &global::Quadratic, 0.0f, 0.1f);
+		ImGui::SliderFloat("Gamma Correction", &global::gammaCorrection, 0, 10);
+		ImGui::Checkbox("Use HDR", &global::useHDR);
+
 		// Rendering
 		int display_w, display_h;
 		glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -179,15 +189,20 @@ int main(int ac, char **av)
 		glEnable(GL_DEPTH_TEST);
 
 		win->draw();
+		ImGui::Render();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
 		/* Poll for and process events */
 		glfwPollEvents();
-		mouseDragging(display_w, display_h);
+		glfwWaitEvents();
+		if (!ImGui::IsMouseHoveringAnyWindow())
+			mouseDragging(display_w, display_h);
 
 	}
+
+	ImGui_ImplGlfwGL3_Shutdown();
 
 	glfwDestroyWindow(window);
 

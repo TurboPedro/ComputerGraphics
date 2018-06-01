@@ -32,11 +32,13 @@ public:
 	virtual GLuint GetBitTangentVBO() const;
 	virtual MaterialInfo GetMaterialInfo() const;
 	virtual void SetMaterialInfo(MaterialInfo info);
+	virtual bool UseIBO() const;
 
 protected:
 	
 	MaterialInfo materialInfo;
 	GLuint VAO, VertexVBO, NormalVBO, IBO, TextureVBO, TangentVBO, BitTangentVBO;
+	bool hasIbo;
 
 	virtual void setup() = 0;
 };

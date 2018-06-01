@@ -23,6 +23,9 @@ SimpleShader::SimpleShader()
 	shaderProgram->addUniform("Light.La");
 	shaderProgram->addUniform("Light.Ld");
 	shaderProgram->addUniform("Light.Ls");
+	shaderProgram->addUniform("Light.Constant");
+	shaderProgram->addUniform("Light.Linear");
+	shaderProgram->addUniform("Light.Quadratic");
 
 	shaderProgram->addUniform("ModelViewMatrix");
 	shaderProgram->addUniform("NormalMatrix");
@@ -41,6 +44,7 @@ bool SimpleShader::use(AGeometry *object, ALight *light, AShader::SModelViewProj
 
 	AGeometry::MaterialInfo material = object->GetMaterialInfo();
 	SColor lightColor = light->GetColor();
+	SAttenuation attenuation = light->GetAttenuation();
 
 	glm::mat4 modelView = mvp->view * mvp->model;
 	glm::mat4 inverseModelView = glm::inverse(modelView);
@@ -53,6 +57,9 @@ bool SimpleShader::use(AGeometry *object, ALight *light, AShader::SModelViewProj
 	glUniform3fv(shaderProgram->uniform("Light.La"), 1, glm::value_ptr(lightColor.Ambient));
 	glUniform3fv(shaderProgram->uniform("Light.Ld"), 1, glm::value_ptr(lightColor.Diffuse));
 	glUniform3fv(shaderProgram->uniform("Light.Ls"), 1, glm::value_ptr(lightColor.Specular));
+	glUniform1fv(shaderProgram->uniform("Light.Constant"), 1, &(attenuation.constant));
+	glUniform1fv(shaderProgram->uniform("Light.Linear"), 1, &(attenuation.linear));
+	glUniform1fv(shaderProgram->uniform("Light.Quadratic"), 1, &(attenuation.quadratic));
 	glUniform1fv(shaderProgram->uniform("Material.Shiness"), 1, &(material.color.Shiness));
 	glUniform1fv(shaderProgram->uniform("Material.Alpha"), 1, &(material.Alpha));
 	glUniform3fv(shaderProgram->uniform("Material.Ka"), 1, glm::value_ptr(material.color.Ambient));
@@ -61,7 +68,12 @@ bool SimpleShader::use(AGeometry *object, ALight *light, AShader::SModelViewProj
 	glUniformMatrix4fv(shaderProgram->uniform("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(modelView));
 	glUniformMatrix3fv(shaderProgram->uniform("NormalMatrix"), 1, GL_FALSE, glm::value_ptr(normalMatrix));
 	glUniformMatrix4fv(shaderProgram->uniform("mvp"), 1, GL_FALSE, glm::value_ptr(mvpMatrix));
-	glDrawElements(GL_TRIANGLES, object->GetElementCount(), object->GetElementType(), 0);
+	if (object->UseIBO()) {
+		glDrawElements(GL_TRIANGLES, object->GetElementCount(), object->GetElementType(), 0);
+	}
+	else {
+		glDrawArrays(GL_TRIANGLES, 0, object->GetElementCount());
+	}
 
 	shaderProgram->disable();
 	glBindVertexArray(0);

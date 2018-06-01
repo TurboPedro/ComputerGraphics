@@ -28,4 +28,11 @@ namespace PremadeColor {
 		{ 0.4, 0.4, 0.4 },
 		10.0
 	};
+
+	const SColor BrickTexture = {
+		{ 0.3, 0.3, 0.3 },
+		{ 1, 1, 1},
+		{ 0.3, 0.3, 0.3 },
+		10
+	};
 }

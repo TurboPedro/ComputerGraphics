@@ -5,6 +5,7 @@
 AGeometry::AGeometry(AGeometry::MaterialInfo info)
 {
 	materialInfo = info;
+	hasIbo = true;
 }
 
 
@@ -55,4 +56,9 @@ AGeometry::MaterialInfo AGeometry::GetMaterialInfo() const
 void AGeometry::SetMaterialInfo(AGeometry::MaterialInfo info)
 {
 	materialInfo = info;
+}
+
+bool AGeometry::UseIBO() const
+{
+	return hasIbo;
 }

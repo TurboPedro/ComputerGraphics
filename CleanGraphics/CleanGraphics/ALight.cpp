@@ -2,11 +2,12 @@
 
 
 
-ALight::ALight(ALight::ELightType lightType, SColor lightColor, glm::vec4 lightPosition)
+ALight::ALight(ALight::ELightType lightType, SColor lightColor, SAttenuation att, glm::vec4 lightPosition)
 {
 	type = lightType;
 	color = lightColor;
 	position = lightPosition;
+	attenuation = att;
 }
 
 
@@ -36,4 +37,14 @@ glm::vec4 ALight::GetPosition() const
 void ALight::SetPosition(glm::vec4 lightPosition)
 {
 	position = lightPosition;
+}
+
+SAttenuation ALight::GetAttenuation() const
+{
+	return attenuation;
+}
+
+void ALight::SetAttenuation(SAttenuation att)
+{
+	attenuation = att;
 }

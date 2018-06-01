@@ -4,14 +4,17 @@
 #include "TextureShader.h"
 #include "NormalMapShader.h"
 #include "SkyboxShader.h"
+#include "HDRShader.h"
 #include "Sphere.h"
+#include "Cube.h"
 #include "Color.h"
+#include "global.h"
 
 #include <vector>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-static float DEFAULT_VIEW_POINT[3] = { 5, 5, 5 };
+static float DEFAULT_VIEW_POINT[3] = { 0, 0, -5 };
 static float DEFAULT_VIEW_CENTER[3] = { 0, 0, 0 };
 static float DEFAULT_UP_VECTOR[3] = { 0, 1, 0 };
 
@@ -82,7 +85,15 @@ glm::mat4 perspective(float fov, float aspect, float n, float f)
 
 void MyGlWindow::draw(void)
 {
+	HDRShader *hdrShader = NULL;
 	AShader::SModelViewProjection mvp;
+
+	if (Shaders.find("HDR") != Shaders.end() && global::useHDR) {
+		hdrShader = static_cast<HDRShader *>(Shaders["HDR"]);
+		hdrShader->beforeDraw();
+	}
+
+	Lights["SimpleBigLight"]->SetAttenuation({ 1.0, global::Linear, global::Quadratic });
 
 	glViewport(0, 0, m_width, m_height);
 
@@ -94,23 +105,34 @@ void MyGlWindow::draw(void)
 	mvp.projection = perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 500.0f);
 
 	m_model.glPushMatrix();
+	m_model.glTranslate(0, 0, 25);
+	m_model.glScale(2.5, 2.5, 27.5);
 	mvp.model = m_model.getMatrix();
-	Shader->use(Models[0], &mvp, skybox);
-//	Shader->use(Geometries[0], Light, &mvp, NULL, Textures["moss.png"]);
-
+	Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+//	Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleRedLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+//	Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBlueLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+//	Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleGreenLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
 	m_model.glPopMatrix();
+
+	if (hdrShader && global::useHDR) {
+		hdrShader->use();
+	}
 }
 
 MyGlWindow::~MyGlWindow()
 {
 	delete skybox;
-	delete Shader;
-	delete Light;
 	for (auto &i : Geometries) {
-		delete i;
+		delete i.second;
+	}
+	for (auto &i : Shaders) {
+		delete i.second;
+	}
+	for (auto &i : Lights) {
+		delete i.second;
 	}
 	for (auto &i : Models) {
-		delete i;
+		delete i.second;
 	}
 	for (auto &i : Textures) {
 		delete i.second;
@@ -120,19 +142,49 @@ MyGlWindow::~MyGlWindow()
 
 void MyGlWindow::initialize(const char *modelName)
 {
-	Shader = new SkyboxShader();
-	
+	HDRShader *HShader = new HDRShader(m_width - 100, m_height - 100);
+	TextureShader *TShader = new TextureShader();
+	Shaders["HDR"] = HShader;
+	Shaders["Texture"] = TShader;
+
+	SColor lightColor;
+
+	glm::vec3 intensity = { 200, 200, 200};
+	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
+	SimpleLight *Light = new SimpleLight(lightColor, PremadeAttenuation::NoAttenuation, glm::vec4(0, 0, 24.75, 1));
+	Lights["SimpleBigLight"] = Light;
+
+	intensity = { .1, .0, .0 };
+	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
+	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(-1.4, -1.9, 9.0, 1));
+	Lights["SimpleRedLight"] = Light;
+
+	intensity = { .0, .0, .2 };
+	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
+	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(0, -1.8, 4.0, 1));
+	Lights["SimpleBlueLight"] = Light;
+
+	intensity = { .0, .1, .0 };
+	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
+	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(0.8, -1.7, 6.0, 1));
+	Lights["SimpleGreenLight"] = Light;
+
 	AGeometry::MaterialInfo infos;
 	infos.Alpha = 1.0;
-	infos.color = PremadeColor::RubberBlack;
+	infos.color = PremadeColor::BrickTexture;
 
-	skybox = new Skybox(50.0, "museum_hall", ".JPG", infos);
+	Texture *texture = new Texture("container2.png", "", Texture::ETextureType::DIFFUSE);
+	Textures["container2.png"] = texture;
 
-	LoadedModel *model;
-	if (modelName)
-		model = new LoadedModel(modelName);
-	else
-		model = new LoadedModel("teapot.obj");
+	texture = new Texture("container2_specular.png", "", Texture::ETextureType::SPECULAR);
+	Textures["container2_specular.png"] = texture;
 
-	Models.push_back(model);
+	texture = new Texture("wood.jpg", "", Texture::ETextureType::DIFFUSE);
+	Textures["wood.jpg"] = texture;
+
+	Sphere *sphere = new Sphere(1, 60, 60, infos);
+	Geometries["Sphere"] = sphere;
+
+	Cube *cube = new Cube(infos);
+	Geometries["Cube"] = cube;
 }

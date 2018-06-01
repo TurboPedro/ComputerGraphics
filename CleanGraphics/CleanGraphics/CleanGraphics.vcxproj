@@ -123,7 +123,11 @@
     <ClCompile Include="AGeometry.cpp" />
     <ClCompile Include="ALight.cpp" />
     <ClCompile Include="AShader.cpp" />
+    <ClCompile Include="Attenuation.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="global.cpp" />
+    <ClCompile Include="HDRShader.cpp" />
     <ClCompile Include="LoadedModel.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -143,6 +147,9 @@
     <ClInclude Include="ALight.h" />
     <ClInclude Include="AShader.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="global.h" />
+    <ClInclude Include="HDRShader.h" />
     <ClInclude Include="LoadedModel.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Mesh.h" />
@@ -160,6 +167,8 @@
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="hdr.frag" />
+    <None Include="hdr.vert" />
     <None Include="normalmap.frag" />
     <None Include="normalmap.vert" />
     <None Include="simple.frag" />

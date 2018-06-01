@@ -8,6 +8,10 @@ struct LightInfo {
 	vec3 La;
 	vec3 Ld;
 	vec3 Ls;
+
+	float Constant;
+	float Linear;
+	float Quadratic;
 };
 
 struct MaterialInfo {
@@ -41,7 +45,11 @@ void main()
 	vec3 diffuse = Material.Kd * Light.Ld * max(dot(L, Normal), 0);
 	vec3 specular = Material.Ks * Light.Ls * pow(max(dot(H, Normal), 0.0), Material.Shiness);
 
-	vec3 LightIntensity = ambient + diffuse + specular;
+	float distance = length(Light.Position.xyz - Position.xyz
+	);
+	float attenuation = 1.0 / (Light.Constant + Light.Linear * distance + Light.Quadratic * (distance * distance));
+
+	vec3 LightIntensity = (ambient + diffuse + specular) * attenuation;
 
 	FragColor = vec4(LightIntensity, Material.Alpha);
 }

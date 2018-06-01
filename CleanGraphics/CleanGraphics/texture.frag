@@ -4,21 +4,22 @@ in vec3 Position;
 in vec3 Normal;
 in vec2 TexCoord;
 
-uniform sampler2D Tex1;
-uniform sampler2D Tex2;
+uniform sampler2D DiffuseTexture;
+uniform sampler2D SpecularTexture;
 
 struct LightInfo {
 	vec4 Position; // Light position in eye coords.
 	vec3 La;
 	vec3 Ld;
 	vec3 Ls;
+
+	float Constant;
+	float Linear;
+	float Quadratic;
 };
 uniform LightInfo Light;
 
 struct MaterialInfo {
-	vec3 Ka;
-	vec3 Kd;
-	vec3 Ks;
 	float Alpha;
 	float Shiness;      // Specular shininess factor (phong exponent)
 };
@@ -39,14 +40,15 @@ void main()
 	vec3 H = normalize(V + L);
 	vec3 R = normalize(reflect(-L, Normal));
 
-	vec3 ambient = Material.Ka * Light.La;
-	vec3 diffuse = Material.Kd * Light.Ld * max(dot(L, Normal), 0);
-	vec3 specular = Material.Ks * Light.Ls * pow(max(dot(H, Normal), 0.0), Material.Shiness);
-	vec4 texColor1 = texture(Tex1, TexCoord);
-	vec4 texColor2 = texture(Tex2, TexCoord);
-	vec4 texColor = mix(texColor2, texColor1, texColor2.a);
+	float distance = length(Light.Position.xyz - Position);
+	float attenuation = 1.0 / (Light.Constant + Light.Linear * distance + Light.Quadratic * (distance * distance));
 
-	vec3 LightIntensity = ((vec4( ambient + diffuse, 1.0 ) * texColor) + vec4(specular, 1.0)).xyz;
+	vec3 ambient = vec3(texture(DiffuseTexture, TexCoord)) * Light.La;
+	vec3 diffuse = vec3(texture(DiffuseTexture, TexCoord)) * Light.Ld * max(dot(L, Normal), 0);
+	vec3 specular = Light.Ls * pow(max(dot(H, Normal), 0.0), Material.Shiness) * vec3(texture(SpecularTexture, TexCoord));
+
+	vec3 LightIntensity = ambient * attenuation + diffuse * attenuation + specular * attenuation
+	;
 
 	FragColor = vec4(LightIntensity, Material.Alpha);
 

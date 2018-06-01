@@ -17,6 +17,7 @@ namespace PremadeColor {
 	extern const SColor Emerald;
 	extern const SColor Jade;
 	extern const SColor RubberBlack;
+	extern const SColor BrickTexture;
 }
 
 #endif /* COLOR_H_ */

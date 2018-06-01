@@ -43,10 +43,10 @@ private:
 	void initialize(const char *);
 
 	Model m_model;
-	AShader *Shader;
 	Skybox *skybox;
-	std::vector<AGeometry *> Geometries;
-	std::vector<LoadedModel *> Models;
+	std::map<const char *, AShader *> Shaders;
+	std::map<const char*, AGeometry *> Geometries;
+	std::map<const char*, LoadedModel *> Models;
 	std::map<const char *, Texture *> Textures;
-	ALight *Light;
+	std::map<const char *, ALight *> Lights;
 };
