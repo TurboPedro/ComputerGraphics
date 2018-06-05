@@ -5,5 +5,6 @@ namespace global {
 	float Linear = 0.09;
 	float Quadratic = 0.032;
 	bool useHDR = true;
+	bool useBloom = true;
 	float gammaCorrection = 1.116;
 }

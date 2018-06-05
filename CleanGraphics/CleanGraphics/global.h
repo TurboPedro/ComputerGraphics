@@ -9,5 +9,6 @@ namespace global {
 	extern float Linear;
 	extern float Quadratic;
 	extern bool useHDR;
+	extern bool useBloom;
 	extern float gammaCorrection;
 };

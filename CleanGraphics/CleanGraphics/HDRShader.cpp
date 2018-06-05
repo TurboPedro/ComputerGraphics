@@ -7,10 +7,17 @@ HDRShader::HDRShader(int w, int h)
 	width = w;
 	height = h;
 
+	blurShader = new ShaderProgram();
+	blurShader->initFromFiles("blur.vert", "blur.frag");
+
+	blurShader->addUniform("Image");
+	blurShader->addUniform("Horizontal");
+
 	shaderProgram = new ShaderProgram();
 	shaderProgram->initFromFiles("hdr.vert", "hdr.frag");
 
-	shaderProgram->addUniform("ScreenTex");
+	shaderProgram->addUniform("SceneTex");
+	shaderProgram->addUniform("BloomTex");
 	shaderProgram->addUniform("Gamma");
 
 	float quadVertices[] = {
@@ -57,16 +64,38 @@ HDRShader::HDRShader(int w, int h)
 
 	glBindVertexArray(0);
 
-	// Make FrameBuffer, TextureBuffer and RenderBuffer
+	// Make pingpong FrameBuffers and their TextureBuffers
+
+	glGenFramebuffers(2, pingpongFBOs);
+	glGenTextures(2, pingpongTBOs);
+
+	for (int i = 0; i < 2; i++) {
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBOs[i]);
+		glBindTexture(GL_TEXTURE_2D, pingpongTBOs[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongTBOs[i], 0);
+	}
+
+	// Make FrameBuffer, TextureBuffers and RenderBuffer
 	glGenFramebuffers(1, &FBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
-	glGenTextures(1, &TBO);
-	glBindTexture(GL_TEXTURE_2D, TBO);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, w, h, 0, GL_RGBA, GL_FLOAT, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, TBO, 0);
+	glGenTextures(2, TBOs);
+	for (int i = 0; i < 2; i++) {
+		glBindTexture(GL_TEXTURE_2D, TBOs[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, w, h, 0, GL_RGBA, GL_FLOAT, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, TBOs[i], 0);
+	}
+	GLuint attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
 
 	glGenRenderbuffers(1, &RBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, RBO);
@@ -88,6 +117,27 @@ HDRShader::~HDRShader()
 
 bool HDRShader::use(AGeometry * object, std::map<const char*, ALight*>* lights, SModelViewProjection * mvp, Texture * diffuseTexture, Texture * specularTexture)
 {
+	bool horizontal = true;
+	bool first_iteration = true;
+
+	unsigned int amount = 10;
+	blurShader->use();
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBOs[horizontal]);
+		glBindVertexArray(VAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, first_iteration ? TBOs[1] : pingpongTBOs[!horizontal]);
+		glUniform1i(blurShader->uniform("Image"), 0);
+		glUniform1i(blurShader->uniform("Horizontal"), horizontal);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		horizontal = !horizontal;
+		if (first_iteration)
+			first_iteration = false;
+	}
+	blurShader->disable();
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -96,8 +146,13 @@ bool HDRShader::use(AGeometry * object, std::map<const char*, ALight*>* lights, 
 	shaderProgram->use();
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, TBO);
-	glUniform1i(shaderProgram->uniform("ScreenTex"), 0);
+	glBindTexture(GL_TEXTURE_2D, TBOs[0]);
+	glUniform1i(shaderProgram->uniform("SceneTex"), 0);
+	if (global::useBloom) {
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, pingpongTBOs[!horizontal]);
+		glUniform1i(shaderProgram->uniform("BloomTex"), 1);
+	}
 	glUniform1f(shaderProgram->uniform("Gamma"), global::gammaCorrection);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 

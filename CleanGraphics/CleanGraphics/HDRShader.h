@@ -4,8 +4,10 @@ class HDRShader :
 	public AShader
 {
 
-	GLuint FBO, RBO, TBO, VAO, VertexVBO, TextureVBO;
+	GLuint FBO, RBO, VAO, VertexVBO, TextureVBO;
+	GLuint TBOs[2], pingpongFBOs[2], pingpongTBOs[2];
 	int width, height;
+	ShaderProgram *blurShader;
 
 public:
 	HDRShader(int w, int h);

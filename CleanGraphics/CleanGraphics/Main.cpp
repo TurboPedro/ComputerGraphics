@@ -181,6 +181,8 @@ int main(int ac, char **av)
 		//ImGui::SliderFloat("Quadratic attenuation", &global::Quadratic, 0.0f, 2.0f);
 		ImGui::SliderFloat("Gamma Correction", &global::gammaCorrection, 0, 10);
 		ImGui::Checkbox("Use HDR", &global::useHDR);
+		if (global::useHDR)
+			ImGui::Checkbox("Use Bloom", &global::useBloom);
 
 		// Rendering
 		int display_w, display_h;

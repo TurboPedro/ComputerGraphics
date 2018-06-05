@@ -158,5 +158,7 @@
     <None Include="skybox.frag" />
     <None Include="hdr.frag" />
     <None Include="hdr.vert" />
+    <None Include="blur.vert" />
+    <None Include="blur.frag" />
   </ItemGroup>
 </Project>

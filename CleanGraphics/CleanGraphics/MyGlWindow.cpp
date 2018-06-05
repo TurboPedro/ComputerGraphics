@@ -208,12 +208,10 @@ MyGlWindow::~MyGlWindow()
 
 void MyGlWindow::initialize(const char *modelName)
 {
-	HDRShader *HShader = new HDRShader(m_width - 100, m_height - 100);
-	SimpleShader *Shader = new SimpleShader;
+	HDRShader *HShader = new HDRShader(m_width, m_height);
 	TextureShader *TShader = new TextureShader();
 	Shaders["HDR"] = HShader;
 	Shaders["Texture"] = TShader;
-	Shaders["Simple"] = Shader;
 
 	SColor lightColor;
 
@@ -225,19 +223,19 @@ void MyGlWindow::initialize(const char *modelName)
 	SimpleLight *Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(0, 0, 104, 1));
 	Lights["SimpleBigLight"] = Light;
 
-	intensity = { .9, .0, .0 };
+	intensity = { 50, .0, .0 };
 	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
-	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(-1.4, -1.9, 9.0, 1));
+	Light = new SimpleLight(lightColor, PremadeAttenuation::d7, glm::vec4(-1.4, -1.9, 9.0, 1));
 	Lights["SimpleRedLight"] = Light;
 
-	intensity = { .0, .0, 1.8 };
+	intensity = { .0, .0, 50 };
 	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
-	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(0, -1.8, 4.0, 1));
+	Light = new SimpleLight(lightColor, PremadeAttenuation::d7, glm::vec4(0, -1.8, 4.0, 1));
 	Lights["SimpleBlueLight"] = Light;
 
-	intensity = { .0, .9, .0 };
+	intensity = { .0, 50, .0 };
 	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
-	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(0.8, -1.7, 6.0, 1));
+	Light = new SimpleLight(lightColor, PremadeAttenuation::d7, glm::vec4(0.8, -1.7, 6.0, 1));
 	Lights["SimpleGreenLight"] = Light;
 
 	AGeometry::MaterialInfo infos;

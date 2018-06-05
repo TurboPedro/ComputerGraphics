@@ -3,13 +3,15 @@ out vec4 FragColor;
   
 in vec2 TexCoords;
 
-uniform sampler2D ScreenTex;
+uniform sampler2D SceneTex;
+uniform sampler2D BloomTex;
 uniform float Gamma;
 
 void main()
 {
-	vec3 hdrColor = texture(ScreenTex, TexCoords).rgb;
-
+	vec3 hdrColor = texture(SceneTex, TexCoords).rgb;
+    vec3 bloomColor = texture(BloomTex, TexCoords).rgb;
+    hdrColor += bloomColor;
 	// Reinhard tone mapping
 	vec3 mapped = hdrColor / (hdrColor + vec3(1.0));
 
