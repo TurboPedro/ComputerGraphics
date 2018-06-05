@@ -13,13 +13,16 @@ TextureShader::TextureShader()
 	shaderProgram->addUniform("Material.Shiness");
 	shaderProgram->addUniform("Material.Alpha");
 
-	shaderProgram->addUniform("Light.Position");
-	shaderProgram->addUniform("Light.La");
-	shaderProgram->addUniform("Light.Ld");
-	shaderProgram->addUniform("Light.Ls");
-	shaderProgram->addUniform("Light.Constant");
-	shaderProgram->addUniform("Light.Linear");
-	shaderProgram->addUniform("Light.Quadratic");
+	for (int i = 0; i < 8; i++) {
+		std::string number = std::to_string(i);
+		shaderProgram->addUniform(("Lights[" + number + "].Position").c_str());
+		shaderProgram->addUniform(("Lights[" + number + "].La").c_str());
+		shaderProgram->addUniform(("Lights[" + number + "].Ld").c_str());
+		shaderProgram->addUniform(("Lights[" + number + "].Ls").c_str());
+		shaderProgram->addUniform(("Lights[" + number + "].Constant").c_str());
+		shaderProgram->addUniform(("Lights[" + number + "].Linear").c_str());
+		shaderProgram->addUniform(("Lights[" + number + "].Quadratic").c_str());
+	}
 
 	shaderProgram->addUniform("ModelViewMatrix");
 	shaderProgram->addUniform("NormalMatrix");
@@ -31,14 +34,16 @@ TextureShader::~TextureShader()
 {
 }
 
-bool TextureShader::use(AGeometry *object, ALight *light, AShader::SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL)
+bool TextureShader::use(AGeometry *object, std::map<const char *, ALight *> *lights, AShader::SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL)
 {
-	if (light->GetType() != ALight::SIMPLE)
-		return (false);
+	//ALight *light = lights->begin()->second;
+
+	//if (light->GetType() != ALight::SIMPLE)
+	//	return (false);
 
 	AGeometry::MaterialInfo material = object->GetMaterialInfo();
-	SColor lightColor = light->GetColor();
-	SAttenuation attenuation = light->GetAttenuation();
+	//SColor lightColor = light->GetColor();
+	//SAttenuation attenuation = light->GetAttenuation();
 
 	glm::mat4 modelView = mvp->view * mvp->model;
 	glm::mat4 inverseModelView = glm::inverse(modelView);
@@ -65,13 +70,26 @@ bool TextureShader::use(AGeometry *object, ALight *light, AShader::SModelViewPro
 	}
 
 	glBindVertexArray(object->GetVAO());
-	glUniform4fv(shaderProgram->uniform("Light.Position"), 1, glm::value_ptr(modelView * light->GetPosition()));
-	glUniform3fv(shaderProgram->uniform("Light.La"), 1, glm::value_ptr(lightColor.Ambient));
-	glUniform3fv(shaderProgram->uniform("Light.Ld"), 1, glm::value_ptr(lightColor.Diffuse));
-	glUniform3fv(shaderProgram->uniform("Light.Ls"), 1, glm::value_ptr(lightColor.Specular));
-	glUniform1fv(shaderProgram->uniform("Light.Constant"), 1, &(attenuation.constant));
-	glUniform1fv(shaderProgram->uniform("Light.Linear"), 1, &(attenuation.linear));
-	glUniform1fv(shaderProgram->uniform("Light.Quadratic"), 1, &(attenuation.quadratic));
+	int k = 0;
+	int max = (lights->size() > 8 ? 8 : lights->size());
+	for (auto &i : *lights) {
+		ALight *light = i.second;
+		SColor lightColor = light->GetColor();
+		SAttenuation attenuation = light->GetAttenuation();
+		std::string number = std::to_string(k);
+
+		glUniform4fv(shaderProgram->uniform(("Lights[" + number + "].Position").c_str()), 1, glm::value_ptr(mvp->view * light->GetPosition()));
+		glUniform3fv(shaderProgram->uniform(("Lights[" + number + "].La").c_str()), 1, glm::value_ptr(lightColor.Ambient));
+		glUniform3fv(shaderProgram->uniform(("Lights[" + number + "].Ld").c_str()), 1, glm::value_ptr(lightColor.Diffuse));
+		glUniform3fv(shaderProgram->uniform(("Lights[" + number + "].Ls").c_str()), 1, glm::value_ptr(lightColor.Specular));
+		glUniform1fv(shaderProgram->uniform(("Lights[" + number + "].Constant").c_str()), 1, &(attenuation.constant));
+		glUniform1fv(shaderProgram->uniform(("Lights[" + number + "].Linear").c_str()), 1, &(attenuation.linear));
+		glUniform1fv(shaderProgram->uniform(("Lights[" + number + "].Quadratic").c_str()), 1, &(attenuation.quadratic));
+
+		if (k >= max)
+			break;
+		k++;
+	}
 	glUniform1fv(shaderProgram->uniform("Material.Shiness"), 1, &(material.color.Shiness));
 	glUniform1fv(shaderProgram->uniform("Material.Alpha"), 1, &(material.Alpha));
 	glUniformMatrix4fv(shaderProgram->uniform("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(modelView));
@@ -89,7 +107,7 @@ bool TextureShader::use(AGeometry *object, ALight *light, AShader::SModelViewPro
 	return true;
 }
 
-bool TextureShader::use(LoadedModel *loadedModel, ALight *light, AShader::SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL)
+bool TextureShader::use(LoadedModel *loadedModel, std::map<const char *, ALight *> *lights, AShader::SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL)
 {
 	std::vector<Mesh> *meshes = loadedModel->GetMeshes();
 	unsigned int i = 0;
@@ -106,7 +124,7 @@ bool TextureShader::use(LoadedModel *loadedModel, ALight *light, AShader::SModel
 					loadedSpecularTexture = texture;
 			}
 		}
-		if (!use(&mesh, light, mvp, loadedDiffuseTexture, loadedSpecularTexture))
+		if (!use(&mesh, lights, mvp, loadedDiffuseTexture, loadedSpecularTexture))
 			break;
 		i++;
 	}

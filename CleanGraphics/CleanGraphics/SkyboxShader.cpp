@@ -44,7 +44,7 @@ bool SkyboxShader::use(AGeometry * object, SModelViewProjection * mvp, Skybox * 
 	return true;
 }
 
-bool SkyboxShader::use(AGeometry * object, ALight * light, SModelViewProjection * mvp, Texture * diffuseTexture, Texture * specularTexture)
+bool SkyboxShader::use(AGeometry * object, std::map<const char *, ALight *> *lights, SModelViewProjection * mvp, Texture * diffuseTexture, Texture * specularTexture)
 {
 	return false;
 }

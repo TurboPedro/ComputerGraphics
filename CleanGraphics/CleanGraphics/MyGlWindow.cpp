@@ -93,7 +93,8 @@ void MyGlWindow::draw(void)
 		hdrShader->beforeDraw();
 	}
 
-	Lights["SimpleBigLight"]->SetAttenuation({ 1.0, global::Linear, global::Quadratic });
+//	Lights["SimpleBigLight"]->SetPosition(glm::vec4(global::lightPosition, 1.0));
+//	Lights["SimpleBigLight"]->SetAttenuation({ 1.0, global::Linear, global::Quadratic });
 
 	glViewport(0, 0, m_width, m_height);
 
@@ -104,11 +105,76 @@ void MyGlWindow::draw(void)
 	mvp.view = lookAt(eye, look, up);
 	mvp.projection = perspective(45.0f, 1.0f * m_width / m_height, 0.1f, 500.0f);
 
+	// Attenuation scene :
+
+	//m_model.glPushMatrix();
+	//m_model.glScale(0.5, 0.5, 0.5);
+	//m_model.glPushMatrix();
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(2, 5, -15);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(-1.5f, -2.2f, -2.5f);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(-3.8f, -2.0f, -12.3f);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(2.4f, -0.4f, -3.5f);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(-1.7f, 3.0f, -7.5f);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(1.3f, -2.0f, -2.5f);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(1.5f, 2.0f, -2.5f);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(1.5f, 0.2f, -1.5f);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(-1.3f, 1.0f, -1.5f);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	//m_model.glPopMatrix();
+
+	// HDR Scene LightBulb
+
+	//m_model.glPushMatrix();
+	//m_model.glTranslate(0, 0, 104);
+	//m_model.glScale(0.1, 0.1, 0.1);
+	//mvp.model = m_model.getMatrix();
+	//Shaders["Simple"]->use(Geometries["Sphere"], Lights["SimpleBigLight"], &mvp);
+	//m_model.glPopMatrix();
+
+	// HDR Scene
+
 	m_model.glPushMatrix();
-	m_model.glTranslate(0, 0, 25);
-	m_model.glScale(2.5, 2.5, 27.5);
+	m_model.glTranslate(0, 0, 50);
+	m_model.glScale(5, 5, 55);
 	mvp.model = m_model.getMatrix();
-	Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBigLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
+	Shaders["Texture"]->use(Geometries["Cube"], &Lights, &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
 //	Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleRedLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
 //	Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleBlueLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
 //	Shaders["Texture"]->use(Geometries["Cube"], Lights["SimpleGreenLight"], &mvp, Textures["container2.png"], Textures["container2_specular.png"]);
@@ -143,35 +209,40 @@ MyGlWindow::~MyGlWindow()
 void MyGlWindow::initialize(const char *modelName)
 {
 	HDRShader *HShader = new HDRShader(m_width - 100, m_height - 100);
+	SimpleShader *Shader = new SimpleShader;
 	TextureShader *TShader = new TextureShader();
 	Shaders["HDR"] = HShader;
 	Shaders["Texture"] = TShader;
+	Shaders["Simple"] = Shader;
 
 	SColor lightColor;
 
 	glm::vec3 intensity = { 200, 200, 200};
+//	lightColor.Ambient = { 0.2, 0.2, 0.2 };
+//	lightColor.Diffuse = { 0.5, 0.5, 0.5 };
+//	lightColor.Specular = { 1, 1, 1 };
 	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
-	SimpleLight *Light = new SimpleLight(lightColor, PremadeAttenuation::NoAttenuation, glm::vec4(0, 0, 24.75, 1));
+	SimpleLight *Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(0, 0, 104, 1));
 	Lights["SimpleBigLight"] = Light;
 
-	intensity = { .1, .0, .0 };
+	intensity = { .9, .0, .0 };
 	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
 	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(-1.4, -1.9, 9.0, 1));
 	Lights["SimpleRedLight"] = Light;
 
-	intensity = { .0, .0, .2 };
+	intensity = { .0, .0, 1.8 };
 	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
 	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(0, -1.8, 4.0, 1));
 	Lights["SimpleBlueLight"] = Light;
 
-	intensity = { .0, .1, .0 };
+	intensity = { .0, .9, .0 };
 	lightColor.Ambient = lightColor.Diffuse = lightColor.Specular = intensity;
 	Light = new SimpleLight(lightColor, PremadeAttenuation::d20, glm::vec4(0.8, -1.7, 6.0, 1));
 	Lights["SimpleGreenLight"] = Light;
 
 	AGeometry::MaterialInfo infos;
 	infos.Alpha = 1.0;
-	infos.color = PremadeColor::BrickTexture;
+	infos.color = PremadeColor::White;
 
 	Texture *texture = new Texture("container2.png", "", Texture::ETextureType::DIFFUSE);
 	Textures["container2.png"] = texture;

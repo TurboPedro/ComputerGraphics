@@ -29,8 +29,8 @@ public:
 	AShader();
 	~AShader();
 
-	virtual bool use(AGeometry *object, ALight *light, SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL) = 0;
-	virtual bool use(LoadedModel *loadedModel, ALight *light, SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL);
+	virtual bool use(AGeometry *object, std::map<const char *, ALight *> *lights, SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL) = 0;
+	virtual bool use(LoadedModel *loadedModel, std::map<const char *, ALight *> *lights, SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL);
 	virtual bool use(AGeometry *object, SModelViewProjection *mvp, Skybox *skybox);
 	virtual bool use(LoadedModel *loadedModel, SModelViewProjection *mvp, Skybox *skybox);
 };

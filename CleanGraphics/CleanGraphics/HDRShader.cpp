@@ -86,18 +86,8 @@ HDRShader::~HDRShader()
 {
 }
 
-void HDRShader::beforeDraw()
+bool HDRShader::use(AGeometry * object, std::map<const char*, ALight*>* lights, SModelViewProjection * mvp, Texture * diffuseTexture, Texture * specularTexture)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-	glDepthMask(GL_TRUE);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-}
-
-bool HDRShader::use(AGeometry * object, ALight * light, SModelViewProjection * mvp, Texture * diffuseTexture, Texture * specularTexture)
-{
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -115,4 +105,13 @@ bool HDRShader::use(AGeometry * object, ALight * light, SModelViewProjection * m
 	shaderProgram->disable();
 
 	return true;
+}
+
+void HDRShader::beforeDraw()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glDepthMask(GL_TRUE);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 }

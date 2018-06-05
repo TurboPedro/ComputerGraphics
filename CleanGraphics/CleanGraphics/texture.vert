@@ -16,7 +16,7 @@ void main()
 {
 	TexCoord = VertexTextureCoor;
 	Normal = normalize( NormalMatrix * VertexNormal);
-	Position = vec3( ModelViewMatrix * vec4(VertexPosition,1.0) );
+	Position = vec3( ModelViewMatrix * vec4(VertexPosition, 1.0) );
 
 	gl_Position = mvp * vec4(VertexPosition,1.0);
 }

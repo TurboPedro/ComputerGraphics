@@ -45,8 +45,7 @@ void main()
 	vec3 diffuse = Material.Kd * Light.Ld * max(dot(L, Normal), 0);
 	vec3 specular = Material.Ks * Light.Ls * pow(max(dot(H, Normal), 0.0), Material.Shiness);
 
-	float distance = length(Light.Position.xyz - Position.xyz
-	);
+	float distance = length(Light.Position.xyz - Position.xyz);
 	float attenuation = 1.0 / (Light.Constant + Light.Linear * distance + Light.Quadratic * (distance * distance));
 
 	vec3 LightIntensity = (ambient + diffuse + specular) * attenuation;

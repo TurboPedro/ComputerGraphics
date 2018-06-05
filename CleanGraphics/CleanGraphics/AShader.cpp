@@ -11,13 +11,13 @@ AShader::~AShader()
 {
 }
 
-bool AShader::use(LoadedModel *loadedModel, ALight *light, SModelViewProjection *mvp, Texture *diffuseTexture, Texture *specularTexture)
+bool AShader::use(LoadedModel *loadedModel, std::map<const char *, ALight *> *lights, SModelViewProjection *mvp, Texture *diffuseTexture, Texture *specularTexture)
 {
 	std::vector<Mesh> *meshes = loadedModel->GetMeshes();
 	unsigned int i = 0;
 
 	for (auto &mesh : *meshes) {
-		if (!use(&mesh, light, mvp))
+		if (!use(&mesh, lights, mvp))
 			break;
 		i++;
 	}

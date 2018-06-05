@@ -30,8 +30,10 @@ NormalMapShader::~NormalMapShader()
 {
 }
 
-bool NormalMapShader::use(AGeometry *object, ALight *light, AShader::SModelViewProjection *mvp, Texture *normalMapTexture, Texture *diffuseTexture = NULL)
+bool NormalMapShader::use(AGeometry *object, std::map<const char *, ALight *> *lights, AShader::SModelViewProjection *mvp, Texture *normalMapTexture, Texture *diffuseTexture = NULL)
 {
+	ALight *light = lights->begin()->second;
+
 	if (light->GetType() != ALight::SIMPLE)
 		return (false);
 
@@ -82,7 +84,7 @@ bool NormalMapShader::use(AGeometry *object, ALight *light, AShader::SModelViewP
 	return true;
 }
 
-bool NormalMapShader::use(LoadedModel *loadedModel, ALight *light, AShader::SModelViewProjection *mvp, Texture *normalMapTexture, Texture *diffuseTexture = NULL)
+bool NormalMapShader::use(LoadedModel *loadedModel, std::map<const char *, ALight *> *lights, AShader::SModelViewProjection *mvp, Texture *normalMapTexture, Texture *diffuseTexture = NULL)
 {
 	std::vector<Mesh> *meshes = loadedModel->GetMeshes();
 	unsigned int i = 0;
@@ -99,7 +101,7 @@ bool NormalMapShader::use(LoadedModel *loadedModel, ALight *light, AShader::SMod
 					loadedSpecularTexture = texture;
 			}
 		}
-		if (!use(&mesh, light, mvp, loadedDiffuseTexture, loadedSpecularTexture))
+		if (!use(&mesh, lights, mvp, loadedDiffuseTexture, loadedSpecularTexture))
 			break;
 		i++;
 	}

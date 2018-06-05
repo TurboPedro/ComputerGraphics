@@ -8,6 +8,6 @@ public:
 	~SkyboxShader();
 
 	virtual bool use(AGeometry *object, SModelViewProjection *mvp, Skybox *skybox);
-	virtual bool use(AGeometry *object, ALight *light, SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL);
+	virtual bool use(AGeometry *object, std::map<const char *, ALight *> *lights, SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL);
 };
 

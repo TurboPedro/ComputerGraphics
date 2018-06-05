@@ -174,8 +174,11 @@ int main(int ac, char **av)
 	{
 
 		ImGui_ImplGlfwGL3_NewFrame();
-		ImGui::SliderFloat("Linear attenuation", &global::Linear, 0.0f, 0.1f);
-		ImGui::SliderFloat("Quadratic attenuation", &global::Quadratic, 0.0f, 0.1f);
+		//ImGui::SliderFloat("Light X", &global::lightPosition.x, 0.0f, 20.0f);
+		//ImGui::SliderFloat("Light Y", &global::lightPosition.y, 0.0f, 20.0f);
+		//ImGui::SliderFloat("Light Z", &global::lightPosition.z, 0.0f, 200.0f);
+		//ImGui::SliderFloat("Linear attenuation", &global::Linear, 0.0f, 0.1f);
+		//ImGui::SliderFloat("Quadratic attenuation", &global::Quadratic, 0.0f, 2.0f);
 		ImGui::SliderFloat("Gamma Correction", &global::gammaCorrection, 0, 10);
 		ImGui::Checkbox("Use HDR", &global::useHDR);
 

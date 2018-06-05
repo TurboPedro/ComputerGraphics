@@ -37,8 +37,9 @@ SimpleShader::~SimpleShader()
 {
 }
 
-bool SimpleShader::use(AGeometry *object, ALight *light, AShader::SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL)
+bool SimpleShader::use(AGeometry *object, std::map<const char *, ALight *> *lights, AShader::SModelViewProjection *mvp, Texture *diffuseTexture = NULL, Texture *specularTexture = NULL)
 {
+	ALight *light = lights->begin()->second;
 	if (light->GetType() != ALight::SIMPLE)
 		return (false);
 
