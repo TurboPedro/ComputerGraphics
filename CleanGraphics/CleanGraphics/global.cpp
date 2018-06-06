@@ -1,10 +1,8 @@
 #include "global.h"
 
 namespace global {
-	glm::vec3 lightPosition(1.2, 1.0, 2.0);
-	float Linear = 0.09;
-	float Quadratic = 0.032;
-	bool useHDR = true;
-	bool useBloom = true;
-	float gammaCorrection = 1.116;
+	float Exposure = 1.0;
+	bool UseHDR = true;
+	bool UseBloom = true;
+	float GammaCorrection = 1.0;
 }

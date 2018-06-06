@@ -174,15 +174,11 @@ int main(int ac, char **av)
 	{
 
 		ImGui_ImplGlfwGL3_NewFrame();
-		//ImGui::SliderFloat("Light X", &global::lightPosition.x, 0.0f, 20.0f);
-		//ImGui::SliderFloat("Light Y", &global::lightPosition.y, 0.0f, 20.0f);
-		//ImGui::SliderFloat("Light Z", &global::lightPosition.z, 0.0f, 200.0f);
-		//ImGui::SliderFloat("Linear attenuation", &global::Linear, 0.0f, 0.1f);
-		//ImGui::SliderFloat("Quadratic attenuation", &global::Quadratic, 0.0f, 2.0f);
-		ImGui::SliderFloat("Gamma Correction", &global::gammaCorrection, 0, 10);
-		ImGui::Checkbox("Use HDR", &global::useHDR);
-		if (global::useHDR)
-			ImGui::Checkbox("Use Bloom", &global::useBloom);
+		ImGui::SliderFloat("Gamma Correction", &global::GammaCorrection, 0, 10);
+		ImGui::SliderFloat("Exposure", &global::Exposure, 0, 10);
+		ImGui::Checkbox("Use HDR", &global::UseHDR);
+		if (global::UseHDR)
+			ImGui::Checkbox("Use Bloom", &global::UseBloom);
 
 		// Rendering
 		int display_w, display_h;

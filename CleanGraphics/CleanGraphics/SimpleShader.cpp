@@ -54,7 +54,7 @@ bool SimpleShader::use(AGeometry *object, std::map<const char *, ALight *> *ligh
 	shaderProgram->use();
 
 	glBindVertexArray(object->GetVAO());
-	glUniform4fv(shaderProgram->uniform("Light.Position"), 1, glm::value_ptr(modelView * light->GetPosition()));
+	glUniform4fv(shaderProgram->uniform("Light.Position"), 1, glm::value_ptr(mvp->view * light->GetPosition()));
 	glUniform3fv(shaderProgram->uniform("Light.La"), 1, glm::value_ptr(lightColor.Ambient));
 	glUniform3fv(shaderProgram->uniform("Light.Ld"), 1, glm::value_ptr(lightColor.Diffuse));
 	glUniform3fv(shaderProgram->uniform("Light.Ls"), 1, glm::value_ptr(lightColor.Specular));

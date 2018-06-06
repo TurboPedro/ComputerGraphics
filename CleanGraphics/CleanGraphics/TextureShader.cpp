@@ -23,6 +23,7 @@ TextureShader::TextureShader()
 		shaderProgram->addUniform(("Lights[" + number + "].Linear").c_str());
 		shaderProgram->addUniform(("Lights[" + number + "].Quadratic").c_str());
 	}
+	shaderProgram->addUniform("LightsNumber");
 
 	shaderProgram->addUniform("ModelViewMatrix");
 	shaderProgram->addUniform("NormalMatrix");
@@ -90,6 +91,7 @@ bool TextureShader::use(AGeometry *object, std::map<const char *, ALight *> *lig
 			break;
 		k++;
 	}
+	glUniform1i(shaderProgram->uniform("LightsNumber"), max);
 	glUniform1fv(shaderProgram->uniform("Material.Shiness"), 1, &(material.color.Shiness));
 	glUniform1fv(shaderProgram->uniform("Material.Alpha"), 1, &(material.Alpha));
 	glUniformMatrix4fv(shaderProgram->uniform("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(modelView));

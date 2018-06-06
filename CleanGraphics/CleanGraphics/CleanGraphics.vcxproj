@@ -128,6 +128,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="HDRShader.cpp" />
+    <ClCompile Include="LightBulbShader.cpp" />
     <ClCompile Include="LoadedModel.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="HDRShader.h" />
+    <ClInclude Include="LightBulbShader.h" />
     <ClInclude Include="LoadedModel.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Mesh.h" />
@@ -171,6 +173,8 @@
     <None Include="blur.vert" />
     <None Include="hdr.frag" />
     <None Include="hdr.vert" />
+    <None Include="lightbulb.frag" />
+    <None Include="lightbulb.vert" />
     <None Include="normalmap.frag" />
     <None Include="normalmap.vert" />
     <None Include="simple.frag" />

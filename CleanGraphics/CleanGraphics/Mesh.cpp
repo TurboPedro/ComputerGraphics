@@ -1,7 +1,7 @@
 #include "Mesh.h"
 
 Mesh::Mesh(std::vector<SVertex> _vertices, std::vector<Texture *> _textures, std::vector<GLuint> _indices) :
-	AGeometry({ 1.0, PremadeColor::White })
+	AGeometry({ 1.0, PremadeColor::RubberWhite })
 {
 	vertices = _vertices;
 	textures = _textures;

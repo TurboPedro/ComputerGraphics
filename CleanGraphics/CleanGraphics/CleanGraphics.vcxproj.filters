@@ -78,6 +78,9 @@
     <ClCompile Include="Attenuation.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="LightBulbShader.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyGlWindow.h">
@@ -146,6 +149,9 @@
     <ClInclude Include="HDRShader.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="LightBulbShader.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple.vert" />
@@ -160,5 +166,7 @@
     <None Include="hdr.vert" />
     <None Include="blur.vert" />
     <None Include="blur.frag" />
+    <None Include="lightbulb.frag" />
+    <None Include="lightbulb.vert" />
   </ItemGroup>
 </Project>

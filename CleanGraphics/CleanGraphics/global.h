@@ -5,10 +5,8 @@
 #include <glm/vec4.hpp>
 
 namespace global {
-	extern glm::vec3 lightPosition;
-	extern float Linear;
-	extern float Quadratic;
-	extern bool useHDR;
-	extern bool useBloom;
-	extern float gammaCorrection;
+	extern bool UseHDR;
+	extern bool UseBloom;
+	extern float GammaCorrection;
+	extern float Exposure;
 };

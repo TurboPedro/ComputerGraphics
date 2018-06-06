@@ -1,6 +1,6 @@
 #version 430
 
-#define NR_POINT_LIGHTS 4
+#define NR_POINT_LIGHTS 5
 
 in vec3 Position;
 in vec3 Normal;
@@ -26,6 +26,7 @@ struct MaterialInfo {
 	float Shiness;      // Specular shininess factor (phong exponent)
 };
 uniform MaterialInfo Material;
+uniform int LightsNumber;
 
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
@@ -37,7 +38,7 @@ void main()
 	// view vector : vec3(0, 0, 0) is camera position
 	vec3 V = normalize(vec3(0, 0, 0) - Position.xyz);
 
-	for (int i = 0; i < NR_POINT_LIGHTS; i++) {
+	for (int i = 0; i < LightsNumber; i++) {
 		// light vector
 		vec3 L = normalize(Lights[i].Position.xyz - Position);
 

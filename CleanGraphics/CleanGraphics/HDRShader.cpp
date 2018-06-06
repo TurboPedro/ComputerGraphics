@@ -19,6 +19,7 @@ HDRShader::HDRShader(int w, int h)
 	shaderProgram->addUniform("SceneTex");
 	shaderProgram->addUniform("BloomTex");
 	shaderProgram->addUniform("Gamma");
+	shaderProgram->addUniform("Exposure");
 
 	float quadVertices[] = {
 		// positions   // texCoords
@@ -148,12 +149,13 @@ bool HDRShader::use(AGeometry * object, std::map<const char*, ALight*>* lights, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TBOs[0]);
 	glUniform1i(shaderProgram->uniform("SceneTex"), 0);
-	if (global::useBloom) {
+	if (global::UseBloom) {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, pingpongTBOs[!horizontal]);
 		glUniform1i(shaderProgram->uniform("BloomTex"), 1);
 	}
-	glUniform1f(shaderProgram->uniform("Gamma"), global::gammaCorrection);
+	glUniform1f(shaderProgram->uniform("Exposure"), global::Exposure);
+	glUniform1f(shaderProgram->uniform("Gamma"), global::GammaCorrection);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glBindVertexArray(0);
